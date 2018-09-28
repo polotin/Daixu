@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--登录界面-->
+    <dimen name="edit_txt_width">200dp</dimen>
+    <dimen name="edit_txt_height">40dp</dimen>
+    <dimen name="edit_txt_id_margin_top">200dp</dimen>
+    <dimen name="edit_txt_pwd_margin_top">15dp</dimen>
+    <dimen name="btn_login_margin_top">40dp</dimen>
+    <dimen name="btn_login_height">60dp</dimen>
+    <dimen name="label_margin_edit_text">10dp</dimen>
+    <dimen name="label_link_reg_margin_right">20dp</dimen>
+    <dimen name="label_link_reg_margin_bottom">20dp</dimen>
+    <dimen name="label_link_login_margin_bottom">20dp</dimen>
+    <dimen name="label_link_login_margin_right">20dp</dimen>
+
+    <!--首页底部banner-->
+    <dimen name="banner_height">40dp</dimen>
+</resources>
