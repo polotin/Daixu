@@ -77,7 +77,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.id_btn_send_msg:
-                loginPresenter.sendMsg(editTextPhoneNumber.getText().toString());
+//                loginPresenter.sendMsg(editTextPhoneNumber.getText().toString());
+                Intent intent = new Intent(LoginActivity.this, ValidateActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -99,7 +101,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
 
     @Override
     public void onValidationCodeReceived(){
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, ValidateActivity.class);
         startActivity(intent);
     }
 
