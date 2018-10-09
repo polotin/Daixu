@@ -4,6 +4,7 @@ import com.polotin.daixu.listener.OnLoginFinishedListener;
 import com.polotin.daixu.values.Constant;
 
 public class UserModel implements IUserModel {
+
     public void validLogin(String id, String pwd, OnLoginFinishedListener listener){
         int result = 0;
 
@@ -11,7 +12,10 @@ public class UserModel implements IUserModel {
         result = Constant.LOGIN_SUCCESS;
 
         if(result == Constant.LOGIN_SUCCESS){
-            listener.onLoginSuccess();
         }
+    }
+
+    public void sendMsg(String phoneNumber){
+
     }
 }

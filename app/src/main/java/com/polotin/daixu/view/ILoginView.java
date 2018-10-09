@@ -6,9 +6,9 @@ public interface ILoginView {
 
     public void hideProgressBar();
 
-    public void onEmptyId();
+    public void sendMessage();
 
-    public void onEmptyPassord();
+    public void sendMessageResult(String result);
 
-    public void onLoginSuccess();
+    public void onValidationCodeReceived();
 }

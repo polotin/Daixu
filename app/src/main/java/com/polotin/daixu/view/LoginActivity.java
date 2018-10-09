@@ -1,10 +1,17 @@
 package com.polotin.daixu.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -12,9 +19,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.polotin.daixu.R;
+import com.polotin.daixu.entity.ValidationCode;
 import com.polotin.daixu.presenter.ILoginPresenter;
 import com.polotin.daixu.presenter.LoginPresenter;
+import com.polotin.daixu.utils.CacheUtil;
+import com.polotin.daixu.utils.CheckPermisson;
+import com.polotin.daixu.utils.TouchEventUtils;
 import com.polotin.daixu.values.Constant;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import static android.content.ContentValues.TAG;
 
 public class LoginActivity extends Activity implements ILoginView, View.OnClickListener {
     public final static String ID_KEY = "key";
@@ -22,56 +42,49 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public final static String BACK_PRESSED_TIP = "再按一次退让程序";
     long exitTime = 0;
 
-    static LoginActivity instance;
+    public static LoginActivity instance;
     ILoginPresenter loginPresenter;
-    Button loginBtn;
-    EditText editTextId;
-    EditText editTextPwd;
-    TextView regLink;
+    EditText editTextPhoneNumber;
+    Button btnSendMsg;
     ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
-
+        setContentView(R.layout.activity_login);
+        instance = this;
+        CheckPermisson.checkPermission(this);
         findViews();
         initData();
         setListeners();
     }
 
     public void findViews() {
-        loginBtn = (Button) findViewById(R.id.id_btn_login);
-        editTextId = (EditText) findViewById(R.id.id_edit_text_id);
-        editTextPwd = (EditText) findViewById(R.id.id_edit_txt_pwd);
-        regLink = (TextView) findViewById(R.id.id_link_reg);
+        btnSendMsg = (Button) findViewById(R.id.id_btn_send_msg);
+        editTextPhoneNumber = (EditText) findViewById(R.id.id_et_phone_number);
         progressBar = (ProgressBar) findViewById(R.id.id_pb_login);
     }
 
     public void setListeners() {
-        loginBtn.setOnClickListener(this);
-        regLink.setOnClickListener(this);
+        btnSendMsg.setOnClickListener(this);
     }
 
     public void initData() {
-        instance = this;
         loginPresenter = new LoginPresenter(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.id_btn_login:
-                loginPresenter.login(editTextId.getText().toString(), editTextPwd.getText().toString());
-                break;
-            case R.id.id_link_reg:
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ID_KEY, editTextId.getText().toString());
-                intent.putExtra(BUNDLE_KEY, bundle);
-                startActivity(intent);
+            case R.id.id_btn_send_msg:
+                loginPresenter.sendMsg(editTextPhoneNumber.getText().toString());
                 break;
         }
+    }
+
+    @Override
+    public void sendMessage(){
+        btnSendMsg.callOnClick();
     }
 
     @Override
@@ -85,26 +98,35 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     }
 
     @Override
-    public void onLoginSuccess() {
+    public void onValidationCodeReceived(){
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
     @Override
-    public void onEmptyId() {
-        Toast.makeText(this, Constant.MSG_EMPTY_ID, Toast.LENGTH_LONG).show();
+    public void sendMessageResult(String result) {
+        hideProgressBar();
+        Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onEmptyPassord() {
-        Toast.makeText(this, Constant.MSG_EMPTY_PASSWORD, Toast.LENGTH_LONG).show();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constant.CODE_INTERNET) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e(TAG, "获取到了权限");
+            } else {
+                Log.e(TAG, "没有获取到权限");
+                Toast.makeText(this, "没有获取读取手机权限", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
-                Toast.makeText(this, BACK_PRESSED_TIP , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, BACK_PRESSED_TIP, Toast.LENGTH_SHORT).show();
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();
@@ -112,5 +134,16 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            View v = getCurrentFocus();
+            if(TouchEventUtils.isShouldHideKeyboard(v, ev)){
+                TouchEventUtils.hideKeyboard(v.getWindowToken(), this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

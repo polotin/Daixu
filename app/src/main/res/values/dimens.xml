@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--登录界面-->
+    <dimen name="login_title_size">22sp</dimen>
+    <dimen name="title_to_top">120dp</dimen>
+    <dimen name="et_to_title_bottom">40dp</dimen>
+    <dimen name="et_margin_left">55dp</dimen>
+    <dimen name="et_margin_right">55dp</dimen>
+    <dimen name="send_msg_margin_top">15dp</dimen>
+    <dimen name="register_hint_size">12sp</dimen>
+    <dimen name="reg_hint_margin_top">10dp</dimen>
+    <dimen name="reg_hint_margin_left">5dp</dimen>
+
     <dimen name="edit_txt_width">200dp</dimen>
     <dimen name="edit_txt_height">40dp</dimen>
     <dimen name="edit_txt_id_margin_top">200dp</dimen>
@@ -12,6 +22,10 @@
     <dimen name="label_link_reg_margin_bottom">20dp</dimen>
     <dimen name="label_link_login_margin_bottom">20dp</dimen>
     <dimen name="label_link_login_margin_right">20dp</dimen>
+
+    <!--验证码界面-->
+    <dimen name="tv_validation_code_width">35dp</dimen>
+    <dimen name="tv_validation_code_gap">10dp</dimen>
 
     <!--首页底部banner-->
     <dimen name="banner_height">40dp</dimen>
