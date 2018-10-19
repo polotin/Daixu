@@ -24,8 +24,12 @@
     <dimen name="label_link_login_margin_right">20dp</dimen>
 
     <!--验证码界面-->
+    <dimen name="btn_send_msg_height">55dp</dimen>
     <dimen name="tv_validation_code_width">35dp</dimen>
     <dimen name="tv_validation_code_gap">10dp</dimen>
+    <dimen name="tv_validation_code_height">35dp</dimen>
+    <dimen name="validation_code_view_margin_top">40dp</dimen>
+    <dimen name="msg_time_margin_top">30dp</dimen>
 
     <!--首页底部banner-->
     <dimen name="banner_height">40dp</dimen>

@@ -1,38 +1,28 @@
 package com.polotin.daixu.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
+import com.polotin.daixu.CustomView.MyEditTextView;
 import com.polotin.daixu.R;
-import com.polotin.daixu.entity.ValidationCode;
 import com.polotin.daixu.presenter.ILoginPresenter;
 import com.polotin.daixu.presenter.LoginPresenter;
-import com.polotin.daixu.utils.CacheUtil;
 import com.polotin.daixu.utils.CheckPermisson;
 import com.polotin.daixu.utils.TouchEventUtils;
 import com.polotin.daixu.values.Constant;
-
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import static android.content.ContentValues.TAG;
 
@@ -45,7 +35,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public static LoginActivity instance;
     ILoginPresenter loginPresenter;
     EditText editTextPhoneNumber;
-    Button btnSendMsg;
+    MaterialButton btnSendMsg;
     ProgressBar progressBar;
 
     @Override
@@ -60,8 +50,8 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     }
 
     public void findViews() {
-        btnSendMsg = (Button) findViewById(R.id.id_btn_send_msg);
-        editTextPhoneNumber = (EditText) findViewById(R.id.id_et_phone_number);
+        btnSendMsg = (MaterialButton) findViewById(R.id.id_btn_send_msg);
+        editTextPhoneNumber = (MyEditTextView) findViewById(R.id.id_et_phone_number);
         progressBar = (ProgressBar) findViewById(R.id.id_pb_login);
     }
 
@@ -77,9 +67,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.id_btn_send_msg:
-//                loginPresenter.sendMsg(editTextPhoneNumber.getText().toString());
-                Intent intent = new Intent(LoginActivity.this, ValidateActivity.class);
-                startActivity(intent);
+                loginPresenter.sendMsg(editTextPhoneNumber.getText().toString());
                 break;
         }
     }
@@ -87,6 +75,12 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     @Override
     public void sendMessage(){
         btnSendMsg.callOnClick();
+    }
+
+    @Override
+    public void onCodeValid(){
+        Intent intent = new Intent(LoginActivity.this, ValidateActivity.class);
+        startActivity(intent);
     }
 
     @Override

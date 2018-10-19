@@ -1,7 +1,7 @@
 package com.polotin.daixu.CustomView;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -20,18 +20,17 @@ public class ValidationCodeView extends ConstraintLayout implements TextWatcher 
     private MyInputListener inputListener;
 
     public ValidationCodeView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ValidationCodeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public ValidationCodeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        View.inflate(context, R.layout.view_validate_code, this);
+        View inflate = inflate(getContext(), R.layout.view_validate_code, this);
         textViews = new TextView[MAX];
-
         textViews[0] = (TextView) findViewById(R.id.tv_validation_1);
         textViews[1] = (TextView) findViewById(R.id.tv_validation_2);
         textViews[2] = (TextView) findViewById(R.id.tv_validation_3);

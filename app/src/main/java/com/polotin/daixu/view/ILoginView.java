@@ -11,4 +11,7 @@ public interface ILoginView {
     public void sendMessageResult(String result);
 
     public void onValidationCodeReceived();
+
+    //验证码未过期
+    public void onCodeValid();
 }

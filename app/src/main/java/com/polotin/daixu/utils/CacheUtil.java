@@ -36,13 +36,13 @@ public class CacheUtil {
 
     public static ValidationCode getValidationCode(){
         File cacheFile = LoginActivity.instance.getCacheDir();
-        File validationFile = new File(cacheFile, "Cache_Validation_" + "18201912117");
+        File validationFile = new File(cacheFile, "Cache_Validation_" + Constant.MOBILE);
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         try{
             fis = new FileInputStream(validationFile);
             ois = new ObjectInputStream(fis);
-            ValidationCode vc = (ValidationCode) ois.readObject();
+            ValidationCode vc = ois.readObject() == null ? null : (ValidationCode)ois.readObject();
             return vc;
         }catch (Exception e){
             e.printStackTrace();

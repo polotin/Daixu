@@ -5,6 +5,8 @@
     <string name="login_hint">请输入手机号</string>
     <string name="send_msg">获取验证码</string>
     <string name="register_label">未注册手机验证后自动登录</string>
+    <string name="resend_time_default">60s后可重新获取</string>
+    <string name="resend_msg_label">重新获取验证码</string>
 
     <!--登录界面-->
     <string name="user_id">账号</string>

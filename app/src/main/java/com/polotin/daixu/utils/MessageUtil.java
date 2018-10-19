@@ -1,10 +1,9 @@
 package com.polotin.daixu.utils;
 
 import com.polotin.daixu.presenter.LoginPresenter;
-import com.polotin.daixu.presenter.RegisterPresenter;
+import com.polotin.daixu.presenter.ValidatePresenter;
 import com.polotin.daixu.values.Constant;
 import com.polotin.daixu.values.NeteaseIM;
-import com.polotin.daixu.view.RegisterActivity;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpEntity;
@@ -17,7 +16,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,12 +36,51 @@ public class MessageUtil {
 
     private static String MOBILE = "";
 
-    public static void senMessage(String phoneNumber) throws Exception {
+    public static void sendMessage(String phoneNumber) throws Exception {
         MOBILE = phoneNumber;
-        new Thread(runnable).start();
+        new Thread(send).start();
     }
 
-    static Runnable runnable = new Runnable() {
+    static Runnable send = new Runnable() {
+        @Override
+        public void run() {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(SERVER_URL);
+            String curTime = String.valueOf((new Date()).getTime() / 1000L);
+            String checkSum = CheckSumBuilder.getCheckSum(APP_SECRET, NONCE, curTime);
+            httpPost.addHeader("AppKey", APP_KEY);
+            httpPost.addHeader("Nonce", NONCE);
+            httpPost.addHeader("CurTime", curTime);
+            httpPost.addHeader("CheckSum", checkSum);
+            httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+            nvps.add(new BasicNameValuePair("templateid", TEMPLATEID));
+            nvps.add(new BasicNameValuePair("mobile", MOBILE));
+            nvps.add(new BasicNameValuePair("codeLen", CODELEN));
+            nvps.add(new BasicNameValuePair("params", PARAMS));
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
+                HttpResponse response = httpClient.execute(httpPost);
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    String result = EntityUtils.toString(entity, "utf-8");
+                    System.out.println(result);
+                    JSONObject jsonObject = new JSONObject(result);
+                    if (jsonObject.getString("code").equals(Integer.toString(NeteaseIM.MSG_RETURN_CODE_200))) {
+                        Constant.VALIDATE_CODE = jsonObject.getString("obj");
+                        Constant.VALIDATE_CODE_TIME = curTime;
+                    }
+                    LoginPresenter.handler.sendEmptyMessage(Integer.parseInt(jsonObject.getString("code")));
+                } else {
+                    LoginPresenter.handler.sendEmptyMessage(0);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    static Runnable resend = new Runnable() {
         @Override
         public void run() {
             DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -73,9 +110,9 @@ public class MessageUtil {
                         Constant.VALIDATE_CODE_TIME = curTime;
                         Constant.MOBILE = MOBILE;
                     }
-                    LoginPresenter.handler.sendEmptyMessage(Integer.parseInt(jsonObject.getString("code")));
+                    ValidatePresenter.handler.sendEmptyMessage(Integer.parseInt(jsonObject.getString("code")));
                 } else {
-                    LoginPresenter.handler.sendEmptyMessage(0);
+                    ValidatePresenter.handler.sendEmptyMessage(0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

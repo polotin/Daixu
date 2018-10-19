@@ -1,6 +1,6 @@
 package com.polotin.daixu.view;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -17,10 +17,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LoginActivity.instance.finish();
+        ValidateActivity.instance.finish();
+
+        bindViews();
+        initData();
+        setListeners();
     }
 
+    public void bindViews(){
 
+    }
 
+    public void initData(){
+
+    }
+
+    public void setListeners(){
+
+    }
 
 
 

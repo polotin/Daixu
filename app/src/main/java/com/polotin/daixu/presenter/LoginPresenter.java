@@ -3,6 +3,7 @@ package com.polotin.daixu.presenter;
 import android.os.Handler;
 import android.os.Message;
 
+import com.polotin.daixu.entity.ValidationCode;
 import com.polotin.daixu.listener.OnLoginFinishedListener;
 import com.polotin.daixu.model.IUserModel;
 import com.polotin.daixu.model.UserModel;
@@ -30,6 +31,7 @@ public class LoginPresenter implements ILoginPresenter, OnLoginFinishedListener 
     @Override
     public void sendMsg(String phoneNumber){
         iLoginView.showProgressBar();
+        Constant.MOBILE = phoneNumber;
         if (!StringUtils.isNotEmpty(phoneNumber)) {
             iLoginView.sendMessageResult(Constant.MSG_EMPTY_PHONE);
             return;
@@ -38,8 +40,15 @@ public class LoginPresenter implements ILoginPresenter, OnLoginFinishedListener 
             iLoginView.sendMessageResult(Constant.MSG_ILLEGAL_PHONE_NUMBER);
             return;
         }
+        if(CacheUtil.getValidationCode() != null){
+            ValidationCode validationCode = CacheUtil.getValidationCode();
+            if(System.currentTimeMillis() - Long.valueOf(validationCode.getCodeTime()) < Constant.VALIDATE_CODE_EXPIRE_TIME){
+                iLoginView.onCodeValid();
+                return;
+            }
+        }
         try {
-            MessageUtil.senMessage(phoneNumber);
+            MessageUtil.sendMessage(phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
         }

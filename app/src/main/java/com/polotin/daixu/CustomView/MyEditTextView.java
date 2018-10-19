@@ -12,11 +12,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.polotin.daixu.R;
 import com.polotin.daixu.presenter.LoginPresenter;
 import com.polotin.daixu.values.Msg;
 
-public class MyEditTextView extends EditText implements View.OnFocusChangeListener, TextWatcher, TextView.OnEditorActionListener {
+public class MyEditTextView extends TextInputEditText implements View.OnFocusChangeListener, TextWatcher, TextView.OnEditorActionListener {
     //删除按钮
     private Drawable clearBtnDrawable;
     private boolean hasFocus;
@@ -36,10 +37,10 @@ public class MyEditTextView extends EditText implements View.OnFocusChangeListen
         init();
     }
 
-    public MyEditTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
+//    public MyEditTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+//        super(context, attrs, defStyleAttr, defStyleRes);
+//        init();
+//    }
 
     private void init() {
         clearBtnDrawable = getCompoundDrawables()[2];

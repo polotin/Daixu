@@ -3,7 +3,7 @@ package com.polotin.daixu.utils;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 import com.polotin.daixu.values.Constant;
 import com.polotin.daixu.view.LoginActivity;

@@ -15,6 +15,7 @@ public class Constant {
     public static String VALIDATE_CODE = "";
     public static String VALIDATE_CODE_TIME = "0";
     public static long VALIDATE_CODE_EXPIRE_TIME = 600000;
+    public static String INVALID_CODE = "验证码错误";
 
     public static final int CODE_INTERNET = 8888;
     public static final int CODE_WRITE_EXTERNAL = 8889;
