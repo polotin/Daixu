@@ -100,7 +100,7 @@ public class MyEditTextView extends TextInputEditText implements View.OnFocusCha
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT || (event != null && event.getAction() == KeyEvent.KEYCODE_ENTER)) {
-            LoginPresenter.handler.sendEmptyMessage(Msg.ACTION_SEND_MESSAGE);
+//            LoginPresenter.handler.sendEmptyMessage(Msg.ACTION_SEND_MESSAGE);
             return true;
         }
         return false;

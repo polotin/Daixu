@@ -2,23 +2,35 @@ package com.polotin.daixu.entity;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
-    private String phone;
+import cn.bmob.v3.BmobObject;
+
+public class User extends BmobObject implements Serializable{
+    private String phoneNumber;
     private String userName;
-    private String loginTime;
+    private String password;
 
-    public User(String phone, String userName, String loginTime) {
-        this.phone = phone;
+    public User() {
+    }
+
+    public User(String phoneNumber, String userName, String password) {
+        this.phoneNumber = phoneNumber;
         this.userName = userName;
-        this.loginTime = loginTime;
+        this.password = password;
     }
 
-    public String getPhone() {
-        return phone;
+    public User(String tableName, String phoneNumber, String userName, String password) {
+        super(tableName);
+        this.phoneNumber = phoneNumber;
+        this.userName = userName;
+        this.password = password;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUserName() {
@@ -29,12 +41,12 @@ public class User implements Serializable{
         this.userName = userName;
     }
 
-    public String getLoginTime() {
-        return loginTime;
+    public String getPassword() {
+        return password;
     }
 
-    public void setLoginTime(String loginTime) {
-        this.loginTime = loginTime;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

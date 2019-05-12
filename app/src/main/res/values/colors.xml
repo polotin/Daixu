@@ -7,6 +7,8 @@
     <color name="transparent">#00000000</color>
 
     <color name="colorLoginTitle">#141414</color>
+    <color name="colorRegisterTitle">#141414</color>
     <color name="colorBtn">#0084FF</color>
     <color name="colorBtnText">#FFFFFF</color>
+    <color name="colorBtnBackground">#0084FF</color>
 </resources>

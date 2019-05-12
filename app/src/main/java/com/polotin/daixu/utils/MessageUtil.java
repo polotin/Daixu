@@ -70,9 +70,9 @@ public class MessageUtil {
                         Constant.VALIDATE_CODE = jsonObject.getString("obj");
                         Constant.VALIDATE_CODE_TIME = curTime;
                     }
-                    LoginPresenter.handler.sendEmptyMessage(Integer.parseInt(jsonObject.getString("code")));
+//                    LoginPresenter.handler.sendEmptyMessage(Integer.parseInt(jsonObject.getString("code")));
                 } else {
-                    LoginPresenter.handler.sendEmptyMessage(0);
+//                    LoginPresenter.handler.sendEmptyMessage(0);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -1,9 +1,16 @@
 package com.polotin.daixu.model;
 
+import android.os.Handler;
+
+import com.polotin.daixu.entity.User;
 import com.polotin.daixu.listener.OnLoginFinishedListener;
 
 public interface IUserModel {
-    public void validLogin(String id, String pwd, OnLoginFinishedListener listener);
+    void validLogin(String id, String pwd, OnLoginFinishedListener listener);
 
-    public void sendMsg(String phoneNumber);
+    void sendMsg(String phoneNumber);
+
+    void doRegister(final User user, final Handler handler);
+
+    void doLogin(String phoneNumber, final String password, final Handler handler);
 }

@@ -1,5 +1,6 @@
 <resources>
     <!--登录注册-->
+    <string name="register_title">注册</string>
     <string name="login_title">登录待续，体验更多功能</string>
     <string name="phone_number">手机号</string>
     <string name="login_hint">请输入手机号</string>
