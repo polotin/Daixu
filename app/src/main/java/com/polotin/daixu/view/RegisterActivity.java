@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,27 +36,32 @@ public class RegisterActivity extends Activity implements IRegisterView, View.On
     private String pwd;
     private String pwdConfirm;
     private IRegisterPresenter iRegisterPresenter;
-
     private MyHandler myHandler;
+
+    public static RegisterActivity instance;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (LoginActivity.instance != null) {
+            LoginActivity.instance.finish();
+        }
         setContentView(R.layout.activity_register);
         initView();
         initData();
     }
 
     void initView() {
-        etPhoneNumber =  findViewById(R.id.id_et_phone_number_reg);
-        etUserName =  findViewById(R.id.id_et_username);
-        etPwd =  findViewById(R.id.id_et_pwd);
-        etPwdConfirm =  findViewById(R.id.id_et_pwd_confirm);
-        btnReg =  findViewById(R.id.id_btn_register);
-        tvLogin =  findViewById(R.id.id_tv_login_link);
+        etPhoneNumber = findViewById(R.id.id_et_phone_number_reg);
+        etUserName = findViewById(R.id.id_et_username);
+        etPwd = findViewById(R.id.id_et_pwd);
+        etPwdConfirm = findViewById(R.id.id_et_pwd_confirm);
+        btnReg = findViewById(R.id.id_btn_register);
+        tvLogin = findViewById(R.id.id_tv_login_link);
     }
 
     void initData() {
+        instance = this;
         iRegisterPresenter = new RegisterPresenter();
         myHandler = new MyHandler(this);
         btnReg.setOnClickListener(this);
@@ -97,7 +101,7 @@ public class RegisterActivity extends Activity implements IRegisterView, View.On
         }
     }
 
-    public static class MyHandler extends Handler {
+    public class MyHandler extends Handler {
         private RegisterActivity registerActivity;
 
         public MyHandler(RegisterActivity registerActivity) {
@@ -110,6 +114,8 @@ public class RegisterActivity extends Activity implements IRegisterView, View.On
             switch (msg.what) {
                 case DaixuMessage.REGISTER_SUCCESS:
                     Toast.makeText(registerActivity, "注册成功", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    RegisterActivity.this.startActivity(intent);
                     break;
                 case DaixuMessage.REGISTER_FAIL:
                     Toast.makeText(registerActivity, "注册失败", Toast.LENGTH_SHORT).show();

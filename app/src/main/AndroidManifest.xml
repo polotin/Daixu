@@ -23,11 +23,15 @@
         <activity android:name=".view.LoginActivity"></activity>
         <activity android:name=".view.MainActivity"></activity>
         <activity android:name=".view.ValidateActivity"></activity>
+        <activity android:name=".view.AddPlanActivity"></activity>
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
             android:authorities="com.polotin.daixu.BmobContentProvider">
         </provider>
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="476762e02289c5e37e23673897ba22ec">
+        </meta-data>
+        <service android:name="com.amap.api.location.APSService"></service>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -40,6 +44,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--允许读取手机状态 用于创建BmobInstallation-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-
+    <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"></uses-permission>
 </manifest>

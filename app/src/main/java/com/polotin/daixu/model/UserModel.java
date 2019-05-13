@@ -1,11 +1,14 @@
 package com.polotin.daixu.model;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.polotin.daixu.DaixuMessage;
 import com.polotin.daixu.entity.User;
 import com.polotin.daixu.listener.OnLoginFinishedListener;
 import com.polotin.daixu.values.Constant;
+import com.polotin.daixu.view.ILoginView;
+
 import android.os.Handler;
 
 import org.json.JSONArray;
@@ -69,7 +72,7 @@ public class UserModel implements IUserModel {
     }
 
     @Override
-    public void doLogin(String phoneNumber, final String password, final Handler handler){
+    public void doLogin(String phoneNumber, final String password, final Handler handler, final ILoginView iLoginView){
         BmobQuery query = new BmobQuery("User");
         query.addWhereEqualTo("phoneNumber", phoneNumber);
         query.findObjectsByTable(new QueryListener<JSONArray>() {
@@ -78,11 +81,12 @@ public class UserModel implements IUserModel {
                 if (e == null) {
                     if (jsonArray.length() > 0) {
                         try {
-//                            User user = (User) jsonArray.opt(0);
                             JSONObject jsonObject = jsonArray.optJSONObject(0);
-
                             if (password.equals(jsonObject.getString("password"))) {
-                                handler.sendEmptyMessage(DaixuMessage.LOGIN_SUCCESS);
+                                User user = new User();
+                                user.setPhoneNumber(jsonObject.getString("phoneNumber"));
+                                user.setUserName(jsonObject.getString("userName"));
+                                iLoginView.onLoginSuccess(user);
                             } else {
                                 handler.sendEmptyMessage(DaixuMessage.PHONE_OR_PWD_ERROR);
                             }

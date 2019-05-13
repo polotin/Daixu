@@ -2,33 +2,29 @@ package com.polotin.daixu.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
-import com.polotin.daixu.CustomView.MyEditTextView;
 import com.polotin.daixu.DaixuMessage;
 import com.polotin.daixu.R;
 import com.polotin.daixu.entity.User;
 import com.polotin.daixu.presenter.ILoginPresenter;
 import com.polotin.daixu.presenter.LoginPresenter;
 import com.polotin.daixu.utils.CheckPermisson;
-import com.polotin.daixu.utils.TouchEventUtils;
 import com.polotin.daixu.values.Constant;
+
+import androidx.annotation.NonNull;
 
 import static android.content.ContentValues.TAG;
 
@@ -52,6 +48,9 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         instance = this;
+        if (RegisterActivity.instance != null) {
+            RegisterActivity.instance.finish();
+        }
         CheckPermisson.checkPermission(this);
         findViews();
         initData();
@@ -59,10 +58,10 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
     }
 
     public void findViews() {
-        btnLogin =  findViewById(R.id.id_btn_login);
-        editTextPhoneNumber =  findViewById(R.id.id_et_phone_number);
-        editTextPassword =  findViewById(R.id.id_et_pwd);
-        progressBar =  findViewById(R.id.id_pb_login);
+        btnLogin = findViewById(R.id.id_btn_login);
+        editTextPhoneNumber = findViewById(R.id.id_et_phone_number);
+        editTextPassword = findViewById(R.id.id_et_pwd);
+        progressBar = findViewById(R.id.id_pb_login);
         tvRegisterLink = findViewById(R.id.tv_registetr_link);
     }
 
@@ -84,9 +83,20 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
         }
     }
 
+    @Override
+    public void onLoginSuccess(User user) {
+        SharedPreferences userPreference = getSharedPreferences("USER_INFO", 0);
+        SharedPreferences.Editor editor = userPreference.edit();
+        editor.putString("phoneNumber",  user.getPhoneNumber());
+        editor.putString("userName",  user.getUserName());
+        editor.commit();
+        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        LoginActivity.this.startActivity(intent);
+    }
+
     public class MyHandler extends Handler {
         LoginActivity loginActivity;
-
         public MyHandler(LoginActivity loginActivity) {
             this.loginActivity = loginActivity;
         }
@@ -96,7 +106,7 @@ public class LoginActivity extends Activity implements ILoginView, View.OnClickL
             super.handleMessage(msg);
             switch (msg.what) {
                 case DaixuMessage.LOGIN_SUCCESS:
-                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+
                     break;
                 case DaixuMessage.LOGIN_FAILED:
                     Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();

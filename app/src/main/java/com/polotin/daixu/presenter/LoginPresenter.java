@@ -18,7 +18,7 @@ public class LoginPresenter implements ILoginPresenter {
     }
 
     public void doLogin(String phoneNumber, final String password, final Handler handler) {
-        iUserModel.doLogin(phoneNumber, password, handler);
+        iUserModel.doLogin(phoneNumber, password, handler, iLoginView);
     }
 
 
