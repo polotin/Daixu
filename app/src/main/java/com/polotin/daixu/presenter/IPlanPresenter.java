@@ -6,4 +6,5 @@ import com.polotin.daixu.view.IPlanView;
 public interface IPlanPresenter {
 
     void addPlan(Plan plan);
+    void updatePlan(Plan plan);
 }

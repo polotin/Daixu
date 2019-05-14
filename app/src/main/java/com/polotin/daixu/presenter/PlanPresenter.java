@@ -17,4 +17,8 @@ public class PlanPresenter implements IPlanPresenter {
     public void addPlan(Plan plan) {
         iPlanModel.addPlan(plan, iPlanView);
     }
+
+    public void updatePlan(Plan plan) {
+        iPlanModel.updatePlan(plan, iPlanView);
+    }
 }

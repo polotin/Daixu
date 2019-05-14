@@ -28,7 +28,8 @@ import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.polotin.daixu.R;
 import com.polotin.daixu.entity.Plan;
 import com.polotin.daixu.presenter.IPlanPresenter;
@@ -57,6 +58,8 @@ public class AddPlanActivity extends Activity implements View.OnClickListener, I
     private TextView tvHours;
     private TextView tvContent;
     private Button btnAdd;
+    private Button btnUseCurLocation;
+    public static String curPostion = "";
 
     private IPlanPresenter iPlanPresenter;
 
@@ -72,38 +75,61 @@ public class AddPlanActivity extends Activity implements View.OnClickListener, I
         mMapView.onCreate(savedInstanceState);
         if (aMap == null) {
             aMap = mMapView.getMap();
-            mUiSettings =aMap.getUiSettings();
+            mUiSettings = aMap.getUiSettings();
         }
         initMap();
         initLocation();
     }
 
-    void initViews(){
-        tvContent =findViewById(R.id.id_et_content);
-        tvLocation =findViewById(R.id.id_et_position);
-        tvHours =findViewById(R.id.id_et_hours);
+    void initViews() {
+        btnUseCurLocation = findViewById(R.id.btn_use_curlocation);
+        tvContent = findViewById(R.id.id_et_content);
+        tvLocation = findViewById(R.id.id_et_position);
+        tvHours = findViewById(R.id.id_et_hours);
         btnAdd = findViewById(R.id.id_btn_add);
         btnAdd.setOnClickListener(this);
+        btnUseCurLocation.setOnClickListener(this);
+        Intent intent = getIntent();
+        if ("edit".equals(intent.getStringExtra("operation"))) {
+            Gson gson = new Gson();
+            Plan plan = gson.fromJson(intent.getStringExtra("plan"), Plan.class);
+            tvContent.setText(plan.getContent());
+            tvLocation.setText(plan.getPosition());
+            tvHours.setText("" + plan.getHours());
+        }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.id_btn_add:
-                    Intent intent = getIntent();
-                    String phone = intent.getStringExtra("phoneNumber");
-                Plan plan = new Plan();
-                plan.setPosition(tvLocation.getText().toString());
-                plan.setContent(tvContent.getText().toString());
-                plan.setHours(Float.valueOf(tvHours.getText().toString()));
-                plan.setPhoneNumber(phone);
-                iPlanPresenter.addPlan(plan);
+                Intent intent = getIntent();
+                String phone = intent.getStringExtra("phoneNumber");
+                String operation = intent.getStringExtra("operation");
+                if ("edit".equals(intent.getStringExtra("operation"))) {
+                    Gson gson = new Gson();
+                    Plan plan = gson.fromJson(intent.getStringExtra("plan"), Plan.class);
+                    plan.setPosition(tvLocation.getText().toString());
+                    plan.setContent(tvContent.getText().toString());
+                    plan.setHours(Float.valueOf(tvHours.getText().toString()));
+                    iPlanPresenter.updatePlan(plan);
+                } else {
+                    Plan plan = new Plan();
+                    plan.setPosition(tvLocation.getText().toString());
+                    plan.setContent(tvContent.getText().toString());
+                    plan.setHours(Float.valueOf(tvHours.getText().toString()));
+                    plan.setPhoneNumber(phone);
+                    iPlanPresenter.addPlan(plan);
+                }
+                break;
+            case R.id.btn_use_curlocation:
+                tvLocation.setText(curPostion);
                 break;
         }
     }
 
     @Override
-    public void addSuccess(){
+    public void addSuccess() {
         Toast.makeText(this, "操作成功", Toast.LENGTH_SHORT).show();
         MainActivity.instance.refreshList();
         this.finish();
@@ -130,7 +156,7 @@ public class AddPlanActivity extends Activity implements View.OnClickListener, I
         geocoderSearch.setOnGeocodeSearchListener(this);
     }
 
-    void initLocation(){
+    void initLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             //申请WRITE_EXTERNAL_STORAGE权限
@@ -204,8 +230,10 @@ public class AddPlanActivity extends Activity implements View.OnClickListener, I
                             + "" + amapLocation.getCity() + "" + amapLocation.getProvince()
                             + "" + amapLocation.getDistrict() + "" + amapLocation.getStreet()
                             + "" + amapLocation.getStreetNum());
-                    tvLocation.setText(buffer.toString());
-                    Toast.makeText(getApplicationContext(), buffer.toString(), Toast.LENGTH_LONG).show();
+                    curPostion = buffer.toString();
+                    if(getIntent().getStringExtra("operation").equals("add")) {
+                        tvLocation.setText(buffer.toString());
+                    }
                     isFirstLoc = false;
                 }
             } else {
@@ -227,7 +255,7 @@ public class AddPlanActivity extends Activity implements View.OnClickListener, I
         options.position(new LatLng(amapLocation.getLatitude(), amapLocation.getLongitude()));
         StringBuffer buffer = new StringBuffer();
         buffer.append(amapLocation.getCountry() + "" + amapLocation.getProvince() + ""
-                + amapLocation.getCity() +  "" + amapLocation.getDistrict()
+                + amapLocation.getCity() + "" + amapLocation.getDistrict()
                 + "" + amapLocation.getStreet() + "" + amapLocation.getStreetNum());
         //标题
         options.title(buffer.toString());

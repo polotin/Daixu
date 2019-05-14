@@ -1,7 +1,5 @@
 package com.polotin.daixu.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +20,13 @@ import com.polotin.daixu.entity.Plan;
 import com.polotin.daixu.presenter.IMainPresenter;
 import com.polotin.daixu.presenter.MainPresenter;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements IMainView, View.OnClickListener{
     public final static String BACK_PRESSED_TIP = "再按一次退让程序";
@@ -31,10 +36,10 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
     private FloatingActionButton fab;
     private MyAdapter myAdapter;
     private List<Plan> planList;
-    private IMainPresenter iMainPresenter;
+    private static IMainPresenter iMainPresenter;
     public static MainActivity instance;
 
-    private String phoneNumber;
+    private static String phoneNumber;
     private String userName;
 
     @Override
@@ -55,9 +60,10 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
         listView = findViewById(R.id.id_main_list);
     }
 
-    public void refreshList() {
+    public static void refreshList() {
         iMainPresenter.getPlanListByPhoneNumber(phoneNumber);
     }
+
 
     public void initData(){
         SharedPreferences sharedPreferences = getSharedPreferences("USER_INFO", 0);
@@ -80,9 +86,21 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
             case R.id.id_fab_edit:
                 Intent intent = new Intent(MainActivity.this, AddPlanActivity.class);
                 intent.putExtra("phoneNumber", phoneNumber);
+                intent.putExtra("opertion", "add");
                 this.startActivity(intent);
                 break;
         }
+    }
+
+    public void editPlan(Plan plan) {
+        Intent intent = new Intent(MainActivity.this, AddPlanActivity.class);
+        intent.putExtra("plan", plan.toString());
+        intent.putExtra("operation", "edit");
+        this.startActivity(intent);
+    }
+
+    public void startPlan(Plan plan) {
+        iMainPresenter.startPlan(plan);
     }
 
     @Override
@@ -128,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
             if(convertView == null) {
                 holder = new ViewHolder();
@@ -138,15 +156,52 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
                 holder.tvLocation = convertView.findViewById(R.id.id_tv_location);
                 holder.tvDate = convertView.findViewById(R.id.id_tv_date);
                 holder.tvStart = convertView.findViewById(R.id.id_tv_start);
+                holder.btnEdit = convertView.findViewById(R.id.id_btn_edit);
+                holder.btnStart = convertView.findViewById(R.id.id_btn_start);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder)convertView.getTag();
             }
-            holder.tvContent.setText("内容：" + planList.get(position).getContent());
-            holder.tvLocation.setText("地点：" + planList.get(position).getPosition());
-            holder.tvHours.setText("时长：" + planList.get(position).getHours());
-            holder.tvStart.setText("状态：" + (planList.get(position).isStartFlag() ? "已完成" : "未完成"));
+            Plan plan = planList.get(position);
+            holder.tvContent.setText("内容：" + plan.getContent());
+            holder.tvLocation.setText("地点：" + plan.getPosition());
+            holder.tvHours.setText("时长：" + plan.getHours());
+            String status = "未开始";
+            if(plan.isStartFlag()) {
+                holder.btnStart.setVisibility(View.INVISIBLE);
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try{
+                    Date nowDate = df.parse(df.format(new Date()));
+                    Date startDate = df.parse(plan.getStartAt());
+                    long diff = nowDate.getTime() - startDate.getTime() -(long)(plan.getHours()*60*60*1000) ;
+                    if(diff > 0) {
+                        status = "已结束";
+                    } else {
+                        long diff1 = startDate.getTime()+(long)(plan.getHours()*60*60*1000)-nowDate.getTime();
+                        long days = diff1 / (1000 * 60 * 60 * 24);
+                        long hours = (diff1-days*(1000 * 60 * 60 * 24))/(1000* 60 * 60);
+                        long minutes = (diff1-days*(1000 * 60 * 60 * 24)-hours*(1000* 60 * 60))/(1000* 60);
+                        status = "剩余" + days + "天" + hours + "小时" + minutes + "分";
+                    }
+                }catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                holder.btnStart.setVisibility(View.VISIBLE);
+            }
+            holder.tvStart.setText("状态：" + status);
             holder.tvDate.setText("创建时间" + planList.get(position).getCreatedAt());
+            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.instance.editPlan(planList.get(position));
+                }
+            });
+            holder.btnStart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.instance.startPlan(planList.get(position));                }
+            });
             return convertView;
         }
 
@@ -156,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements IMainView, View.O
             public TextView tvLocation;
             public TextView tvDate;
             public TextView tvStart;
+            public Button btnEdit;
+            public Button btnStart;
         }
     }
 

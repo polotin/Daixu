@@ -17,15 +17,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/et_to_title_bottom">
+        <Button
+            android:id="@+id/btn_use_curlocation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="使用当前地址"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/id_et_position_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/et_to_title_bottom"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_use_curlocation">
 
             <EditText
                 android:id="@+id/id_et_position"

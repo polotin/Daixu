@@ -1,5 +1,7 @@
 package com.polotin.daixu.entity;
 
+import com.google.gson.Gson;
+
 import java.util.Date;
 
 import cn.bmob.v3.BmobObject;
@@ -9,7 +11,16 @@ public class Plan extends BmobObject {
     private String position;
     private String content;
     private float hours;
+    private String startAt;
     private boolean startFlag;
+
+    public String getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(String startAt) {
+        this.startAt = startAt;
+    }
 
     public float getHours() {
         return hours;
@@ -49,5 +60,10 @@ public class Plan extends BmobObject {
 
     public void setStartFlag(boolean startFlag) {
         this.startFlag = startFlag;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

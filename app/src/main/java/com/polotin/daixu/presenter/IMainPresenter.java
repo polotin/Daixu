@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IMainPresenter {
     void getPlanListByPhoneNumber(String phoneNumber);
+
+    void startPlan(Plan plan);
 }
